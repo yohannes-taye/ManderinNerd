@@ -67,3 +67,25 @@
   justify-content: space-around;
   padding: 0.8rem;
 }
+
+.word {
+  cursor: pointer;
+  margin-right: 6px;
+  padding: 2px 4px;
+  transition: background 0.2s;
+}
+
+.word:hover {
+  background: rgba(255, 255, 255, 0.1); /* subtle highlight for dark background */
+  border-radius: 4px;
+}
+
+.tooltip {
+  margin-top: 10px;
+  font-style: italic;
+  background: #1f1f3a; /* matches your exercise cards */
+  border: 1px solid #3a3a70;
+  padding: 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
