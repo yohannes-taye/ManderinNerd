@@ -73,11 +73,27 @@
   margin-right: 6px;
   padding: 2px 4px;
   transition: background 0.2s;
+  display: inline-block;
+  position: relative;
 }
 
 .word:hover {
   background: rgba(255, 255, 255, 0.1); /* subtle highlight for dark background */
   border-radius: 4px;
+}
+
+.pinyin-text {
+  font-size: 0.7em;
+  color: #ffd700;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.chinese-text {
+  font-size: 1em;
+  line-height: 1.2;
 }
 
 .tooltip {

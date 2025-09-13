@@ -5,6 +5,7 @@ function LessonPage() {
   const [showKeywords, setShowKeywords] = useState(false);
   const [showGrammar, setShowGrammar] = useState(false);
   const [showProperNouns, setShowProperNouns] = useState(false);
+  const [showPinyin, setShowPinyin] = useState(false);
 
   const [blog, setBlog] = useState(null);
   const [hoverWord, setHoverWord] = useState(null);
@@ -35,7 +36,10 @@ function LessonPage() {
                 onMouseEnter={() => setHoverWord(i)}
                 onMouseLeave={() => setHoverWord(null)}
               >
-                {word.text}
+                {showPinyin && (
+                  <div className="pinyin-text">{word.pinyin}</div>
+                )}
+                <div className="chinese-text">{word.text}</div>
               </span>
             ))}
           </p>
@@ -94,7 +98,9 @@ function LessonPage() {
         <button>📖 Mark</button>
         <button>🔖 Save</button>
         <button>🎓 Exercises</button>
-        <button>🈶 Pinyin</button>
+        <button onClick={() => setShowPinyin(!showPinyin)}>
+          {showPinyin ? "🈶 Pinyin ✓" : "🈶 Pinyin"}
+        </button>
         <button>⚙️ Settings</button>
       </footer>
     </div>
