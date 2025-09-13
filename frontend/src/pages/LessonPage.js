@@ -11,10 +11,10 @@ function LessonPage() {
 
   useEffect(() => {
     // Fetch blog with ID = 1 (the one you seeded)
-    fetch("http://localhost:5000/blogs/1")
+    fetch("http://localhost:5000/blogs/2")
       .then((res) => res.json())
       .then((data) => setBlog(data));
-  }, []);
+  }, []); 
 
   return (
     <div className="lesson-page">
