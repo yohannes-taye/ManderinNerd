@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import "./LessonPage.css";
 
 function LessonPage() {
+  //Just print to the console for testing purposes
+  console.log("LessonPage component rendered");
+
   const [showKeywords, setShowKeywords] = useState(false);
   const [showGrammar, setShowGrammar] = useState(false);
   const [showProperNouns, setShowProperNouns] = useState(false);
