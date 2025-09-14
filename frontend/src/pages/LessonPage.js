@@ -11,10 +11,35 @@ function LessonPage() {
   const [hoverWord, setHoverWord] = useState(null);
 
   useEffect(() => {
-    // Fetch blog with ID = 1 (the one you seeded)
-    fetch("http://localhost:5000/blogs/2")
-      .then((res) => res.json())
-      .then((data) => setBlog(data));
+    // Fetch blog with ID = 2 (the one you seeded)
+    const getApiUrl = () => {
+      // In production, use environment variable or relative URL
+      if (process.env.NODE_ENV === 'production') {
+        return process.env.REACT_APP_API_URL || '';
+      }
+      // In development, use environment variable or localhost
+      return process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    };
+
+    const apiUrl = getApiUrl();
+    const fetchUrl = apiUrl ? `${apiUrl}/blogs/2` : '/blogs/2';
+    
+    fetch(fetchUrl)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => setBlog(data))
+      .catch((error) => {
+        console.error('Error fetching blog:', error);
+        // Show user-friendly error message
+        setBlog({ 
+          title: "Error Loading Content", 
+          tokens: [{ text: "Unable to load lesson content. Please check your connection.", pinyin: "", meaning: "" }] 
+        });
+      });
   }, []); 
 
   return (
