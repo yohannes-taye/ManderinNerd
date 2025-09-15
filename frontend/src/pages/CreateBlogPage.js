@@ -10,6 +10,8 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
   const [editToken, setEditToken] = useState({ text: "", pinyin: "", meaning: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [jsonInput, setJsonInput] = useState("");
+  const [jsonError, setJsonError] = useState("");
 
   const addToken = () => {
     if (currentToken.text && currentToken.pinyin && currentToken.meaning) {
@@ -40,6 +42,58 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
   const cancelEdit = () => {
     setEditingToken(null);
     setEditToken({ text: "", pinyin: "", meaning: "" });
+  };
+
+  const parseJsonTokens = () => {
+    setJsonError("");
+    
+    if (!jsonInput.trim()) {
+      setJsonError("Please enter JSON data");
+      return;
+    }
+
+    try {
+      const parsedTokens = JSON.parse(jsonInput);
+      
+      // Validate that it's an array
+      if (!Array.isArray(parsedTokens)) {
+        setJsonError("JSON must be an array of token objects");
+        return;
+      }
+
+      // Validate each token has required fields
+      const validTokens = parsedTokens.filter(token => {
+        return token && 
+               typeof token.text === 'string' && 
+               typeof token.pinyin === 'string' && 
+               typeof token.meaning === 'string' &&
+               token.text.trim() && 
+               token.pinyin.trim() && 
+               token.meaning.trim();
+      });
+
+      if (validTokens.length === 0) {
+        setJsonError("No valid tokens found. Each token must have 'text', 'pinyin', and 'meaning' fields");
+        return;
+      }
+
+      if (validTokens.length !== parsedTokens.length) {
+        setJsonError(`Only ${validTokens.length} out of ${parsedTokens.length} tokens are valid. Invalid tokens were skipped.`);
+      }
+
+      // Add valid tokens to existing tokens
+      setTokens([...tokens, ...validTokens]);
+      setJsonInput("");
+      setJsonError("");
+      
+    } catch (err) {
+      setJsonError(`Invalid JSON format: ${err.message}`);
+    }
+  };
+
+  const clearJsonInput = () => {
+    setJsonInput("");
+    setJsonError("");
   };
 
   const handleSubmit = async (e) => {
@@ -81,6 +135,8 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
       setTokens([]);
       setEditingToken(null);
       setEditToken({ text: "", pinyin: "", meaning: "" });
+      setJsonInput("");
+      setJsonError("");
       
       // Notify parent component
       if (onBlogCreated) {
@@ -138,7 +194,48 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
 
           {/* Token Management */}
           <div className="form-group">
-            <label>Vocabulary Tokens:</label>
+            <div className="token-header">
+              <label>Vocabulary Tokens:</label>
+              <span className="token-counter">
+                {tokens.length} token{tokens.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+            
+            {/* JSON Import Section */}
+            <div className="json-import-section">
+              <label htmlFor="json-input" className="json-import-label">
+                📋 Import from JSON Array:
+              </label>
+              <div className="json-input-container">
+                <textarea
+                  id="json-input"
+                  value={jsonInput}
+                  onChange={(e) => setJsonInput(e.target.value)}
+                  placeholder="Paste your JSON array here...&#10;&#10;Example:&#10;[&#10;  {&quot;text&quot;: &quot;中国&quot;, &quot;pinyin&quot;: &quot;zhōng guó&quot;, &quot;meaning&quot;: &quot;China&quot;},&#10;  {&quot;text&quot;: &quot;茶&quot;, &quot;pinyin&quot;: &quot;chá&quot;, &quot;meaning&quot;: &quot;tea&quot;},&#10;  {&quot;text&quot;: &quot;文化&quot;, &quot;pinyin&quot;: &quot;wén huà&quot;, &quot;meaning&quot;: &quot;culture&quot;},&#10;  {&quot;text&quot;: &quot;几千年&quot;, &quot;pinyin&quot;: &quot;jǐ qiān nián&quot;, &quot;meaning&quot;: &quot;thousands of years&quot;},&#10;  {&quot;text&quot;: &quot;历史&quot;, &quot;pinyin&quot;: &quot;lì shǐ&quot;, &quot;meaning&quot;: &quot;history&quot;}&#10;]&#10;&#10;Note: Each object must have 'text', 'pinyin', and 'meaning' fields."
+                  rows="6"
+                  className="json-textarea"
+                />
+                <div className="json-buttons">
+                  <button 
+                    type="button" 
+                    onClick={parseJsonTokens} 
+                    className="parse-json-btn"
+                    disabled={!jsonInput.trim()}
+                  >
+                    📥 Import Tokens
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={clearJsonInput} 
+                    className="clear-json-btn"
+                    disabled={!jsonInput.trim()}
+                  >
+                    🗑️ Clear
+                  </button>
+                </div>
+              </div>
+              {jsonError && <div className="json-error">{jsonError}</div>}
+            </div>
             
             {/* Add Token Form */}
             <div className="token-input">
@@ -264,6 +361,8 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
           setTokens([]);
           setEditingToken(null);
           setEditToken({ text: "", pinyin: "", meaning: "" });
+          setJsonInput("");
+          setJsonError("");
           setError("");
         }}>
           🔄 Reset Form
