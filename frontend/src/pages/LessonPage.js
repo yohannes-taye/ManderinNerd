@@ -28,17 +28,29 @@ function LessonPage({ onNavigateToCreate }) {
     const fetchUrl = apiUrl ? `${apiUrl}/blogs/1` : '/blogs/1';
     
     console.log('Final API URL used:', fetchUrl);
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
     
     fetch(fetchUrl)
       .then((res) => {
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         return res.json();
       })
-      .then((data) => setBlog(data))
+      .then((data) => {
+        console.log('Successfully fetched blog data:', data);
+        setBlog(data);
+      })
       .catch((error) => {
         console.error('Error fetching blog:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          url: fetchUrl
+        });
         // Show user-friendly error message
         setBlog({ 
           title: "Error Loading Content", 
