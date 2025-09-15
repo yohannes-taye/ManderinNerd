@@ -23,7 +23,7 @@ function BlogManagementPage({ onNavigateBack }) {
 
   const getApiUrl = () => {
     if (process.env.NODE_ENV === 'production') {
-      return process.env.REACT_APP_API_URL || '';
+      return process.env.REACT_APP_API_URL || 'http://68.183.250.107:5000';
     }
     return process.env.REACT_APP_API_URL || 'http://localhost:5000';
   };
