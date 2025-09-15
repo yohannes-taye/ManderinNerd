@@ -27,6 +27,8 @@ function LessonPage({ onNavigateToCreate }) {
     const apiUrl = getApiUrl();
     const fetchUrl = apiUrl ? `${apiUrl}/blogs/1` : '/blogs/1';
     
+    console.log('Final API URL used:', fetchUrl);
+    
     fetch(fetchUrl)
       .then((res) => {
         if (!res.ok) {
