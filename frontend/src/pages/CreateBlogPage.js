@@ -12,6 +12,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
   const [error, setError] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [jsonError, setJsonError] = useState("");
+  const [constructSentence, setConstructSentence] = useState(true);
 
   const addToken = () => {
     if (currentToken.text && currentToken.pinyin && currentToken.meaning) {
@@ -83,6 +84,15 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
 
       // Add valid tokens to existing tokens
       setTokens([...tokens, ...validTokens]);
+      
+      // Construct sentence from imported tokens and populate text field (if enabled)
+      if (constructSentence) {
+        const constructedSentence = validTokens.map(token => token.text).join('');
+        if (constructedSentence) {
+          setText(prevText => prevText ? `${prevText}${constructedSentence}` : constructedSentence);
+        }
+      }
+      
       setJsonInput("");
       setJsonError("");
       
@@ -137,6 +147,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
       setEditToken({ text: "", pinyin: "", meaning: "" });
       setJsonInput("");
       setJsonError("");
+      setConstructSentence(true);
       
       // Notify parent component
       if (onBlogCreated) {
@@ -197,7 +208,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
             <div className="token-header">
               <label>Vocabulary Tokens:</label>
               <span className="token-counter">
-                {tokens.length} token{tokens.length !== 1 ? 's' : ''}
+                📊 {tokens.length} token{tokens.length !== 1 ? 's' : ''}
               </span>
             </div>
             
@@ -215,6 +226,17 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
                   rows="6"
                   className="json-textarea"
                 />
+                <div className="json-options">
+                  <label className="json-checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={constructSentence}
+                      onChange={(e) => setConstructSentence(e.target.checked)}
+                      className="json-checkbox"
+                    />
+                    <span className="checkbox-text">Construct sentence from tokens</span>
+                  </label>
+                </div>
                 <div className="json-buttons">
                   <button 
                     type="button" 
@@ -363,6 +385,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
           setEditToken({ text: "", pinyin: "", meaning: "" });
           setJsonInput("");
           setJsonError("");
+          setConstructSentence(true);
           setError("");
         }}>
           🔄 Reset Form
