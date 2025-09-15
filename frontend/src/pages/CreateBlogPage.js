@@ -114,13 +114,18 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
     try {
       const getApiUrl = () => {
         if (process.env.NODE_ENV === 'production') {
-          return process.env.REACT_APP_API_URL || '/api';
+          return process.env.REACT_APP_API_URL || '';
         }
-        return process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+        return process.env.REACT_APP_API_URL || 'http://localhost:5000';
       };
 
       const apiUrl = getApiUrl();
-      const response = await fetch(`${apiUrl}/blogs`, {
+      const fetchUrl = `${apiUrl}/blogs`;
+      console.log('CreateBlog - Final API URL used:', fetchUrl);
+      console.log('CreateBlog - Environment:', process.env.NODE_ENV);
+      console.log('CreateBlog - REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+      
+      const response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./LessonPage.css";
 
-function LessonPage({ onNavigateToCreate }) {
+function LessonPage({ onNavigateToCreate, onNavigateToManage }) {
   //Just print to the console for testing purposes
   console.log("LessonPage component rendered");
 
@@ -144,6 +144,7 @@ function LessonPage({ onNavigateToCreate }) {
           {showPinyin ? "🈶 Pinyin ✓" : "🈶 Pinyin"}
         </button>
         <button onClick={onNavigateToCreate}>✏️ Create Blog</button>
+        <button onClick={onNavigateToManage}>📝 Manage Blogs</button>
         <button>⚙️ Settings</button>
       </footer>
     </div>

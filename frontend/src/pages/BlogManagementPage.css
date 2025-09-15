@@ -1,0 +1,820 @@
+/* Blog Management Page Styles */
+.blog-management-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #121232;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+/* Header */
+.blog-management-header {
+  background: #d32f2f;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.blog-management-header button {
+  background: #3a3a70;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.blog-management-header button:hover {
+  background: #4a4a80;
+}
+
+.blog-management-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.blog-count {
+  background: #2c2c54;
+  color: #ffd700;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Main Content */
+.blog-management-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Error Message */
+.error-message {
+  background: #1f1f3a;
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #3a3a70;
+}
+
+/* No Blogs State */
+.no-blogs {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: white;
+}
+
+.no-blogs-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.no-blogs h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.no-blogs p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Blogs List */
+.blogs-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+/* Blog Card */
+.blog-card {
+  background: #1f1f3a;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #3a3a70;
+  transition: all 0.2s ease;
+}
+
+.blog-card:hover {
+  background: #2c2c54;
+  border-color: #4a4a80;
+}
+
+/* Blog Header */
+.blog-header {
+  margin-bottom: 1rem;
+}
+
+.blog-title {
+  margin: 0 0 0.5rem 0;
+  color: #ffd700;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.blog-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.blog-date, .blog-tokens {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Blog Content */
+.blog-content {
+  margin-bottom: 1.5rem;
+}
+
+.blog-text {
+  color: #fff;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.blog-tokens-preview {
+  background: #2c2c54;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a70;
+}
+
+.blog-tokens-preview strong {
+  color: #ffd700;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.tokens-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.token-item {
+  background: #3a3a70;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #fff;
+  border: 1px solid #4a4a80;
+}
+
+.more-tokens {
+  color: #ccc;
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+/* Blog Actions */
+.blog-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.blog-actions button {
+  background: #3a3a70;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.blog-actions button:hover {
+  background: #4a4a80;
+}
+
+.edit-btn {
+  background: #4caf50;
+}
+
+.edit-btn:hover {
+  background: #45a049;
+}
+
+.delete-btn {
+  background: #f44336;
+}
+
+.delete-btn:hover {
+  background: #da190b;
+}
+
+/* Edit Form */
+.blog-edit-form {
+  background: #2c2c54;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #3a3a70;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #ffd700;
+}
+
+.edit-input, .edit-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #3a3a70;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #1f1f3a;
+  color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.edit-input:focus, .edit-textarea:focus {
+  outline: none;
+  border-color: #4a4a80;
+}
+
+.edit-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.tokens-preview {
+  background: #1f1f3a;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #3a3a70;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.token-preview {
+  display: inline-block;
+  background: #3a3a70;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin: 0.25rem;
+  color: #fff;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.save-btn, .cancel-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.save-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #45a049;
+}
+
+.cancel-btn {
+  background: #757575;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #616161;
+}
+
+/* Token Management Styles */
+.token-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.token-counter {
+  background: #2c2c54;
+  color: #ffd700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* JSON Import Section */
+.json-import-section {
+  background: #2c2c54;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #3a3a70;
+}
+
+.json-import-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #ffd700;
+  font-size: 0.9rem;
+}
+
+.json-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.json-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #3a3a70;
+  border-radius: 4px;
+  background: #1f1f3a;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.json-textarea:focus {
+  outline: none;
+  border-color: #4a4a80;
+}
+
+.json-options {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.json-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.json-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #ffd700;
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+.json-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.parse-json-btn, .clear-json-btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.parse-json-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.parse-json-btn:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.parse-json-btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.clear-json-btn {
+  background: #ff9800;
+  color: white;
+}
+
+.clear-json-btn:hover:not(:disabled) {
+  background: #f57c00;
+}
+
+.clear-json-btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.json-error {
+  background: #f44336;
+  color: white;
+  padding: 0.6rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Token Input */
+.token-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.token-input input {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.75rem;
+  border: 1px solid #3a3a70;
+  border-radius: 4px;
+  background: #1f1f3a;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.token-input input:focus {
+  outline: none;
+  border-color: #4a4a80;
+}
+
+.add-token-btn {
+  background: #4caf50;
+  border: none;
+  color: white;
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.add-token-btn:hover {
+  background: #45a049;
+}
+
+/* Token List */
+.token-list {
+  background: #1f1f3a;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 100px;
+  border: 1px solid #3a3a70;
+}
+
+.token-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #2c2c54;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #3a3a70;
+}
+
+.token-item:last-child {
+  margin-bottom: 0;
+}
+
+.token-text {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #fff;
+}
+
+.token-pinyin {
+  color: #ffd700;
+  font-style: italic;
+}
+
+.token-meaning {
+  color: #ccc;
+  flex: 1;
+}
+
+.token-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.edit-token-btn {
+  background: #2196f3;
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+
+.edit-token-btn:hover {
+  background: #1976d2;
+}
+
+.remove-token-btn {
+  background: #f44336;
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.remove-token-btn:hover {
+  background: #d32f2f;
+}
+
+/* Edit Mode Styles */
+.token-edit {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.token-edit .edit-input {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.4rem;
+  background: #3a3a70;
+  border: 1px solid #4a4a80;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.token-edit .edit-input:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.save-edit-btn {
+  background: #4caf50;
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.save-edit-btn:hover {
+  background: #45a049;
+}
+
+.cancel-edit-btn {
+  background: #ff9800;
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.cancel-edit-btn:hover {
+  background: #f57c00;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #1f1f3a;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  border: 1px solid #3a3a70;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal h3 {
+  margin: 0 0 1rem 0;
+  color: #ffd700;
+}
+
+.modal p {
+  margin: 0 0 1.5rem 0;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.confirm-delete-btn, .cancel-delete-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.confirm-delete-btn {
+  background: #f44336;
+  color: white;
+}
+
+.confirm-delete-btn:hover {
+  background: #da190b;
+}
+
+.cancel-delete-btn {
+  background: #757575;
+  color: white;
+}
+
+.cancel-delete-btn:hover {
+  background: #616161;
+}
+
+/* Footer */
+.blog-management-footer {
+  background: #2c2c54;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.8rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.blog-management-footer button {
+  background: #3a3a70;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.blog-management-footer button:hover {
+  background: #4a4a80;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .blog-management-content {
+    padding: 1rem;
+  }
+  
+  .blogs-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .blog-management-header {
+    padding: 1rem;
+  }
+  
+  .blog-management-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .blog-count {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .blog-card {
+    padding: 1rem;
+  }
+  
+  .blog-title {
+    font-size: 1.1rem;
+  }
+  
+  .blog-meta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .blog-actions {
+    flex-direction: column;
+  }
+  
+  .blog-actions button {
+    width: 100%;
+  }
+  
+  .edit-actions {
+    flex-direction: column;
+  }
+  
+  .edit-actions button {
+    width: 100%;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+  
+  .blog-management-footer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .blog-management-footer button {
+    width: 100%;
+    max-width: 200px;
+  }
+}
