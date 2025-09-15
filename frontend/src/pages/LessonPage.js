@@ -18,10 +18,10 @@ function LessonPage({ onNavigateToCreate }) {
     const getApiUrl = () => {
       // In production, use environment variable or relative URL
       if (process.env.NODE_ENV === 'production') {
-        return process.env.REACT_APP_API_URL || '/api';
+        return process.env.REACT_APP_API_URL || '';
       }
       // In development, use environment variable or localhost
-      return process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      return process.env.REACT_APP_API_URL || 'http://localhost:5000';
     };
 
     const apiUrl = getApiUrl();
