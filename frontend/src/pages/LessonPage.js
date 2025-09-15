@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./LessonPage.css";
 
-function LessonPage() {
+function LessonPage({ onNavigateToCreate }) {
   //Just print to the console for testing purposes
   console.log("LessonPage component rendered");
 
@@ -25,7 +25,7 @@ function LessonPage() {
     };
 
     const apiUrl = getApiUrl();
-    const fetchUrl = apiUrl ? `${apiUrl}/blogs/2` : '/blogs/2';
+    const fetchUrl = apiUrl ? `${apiUrl}/blogs/1` : '/blogs/1';
     
     fetch(fetchUrl)
       .then((res) => {
@@ -129,6 +129,7 @@ function LessonPage() {
         <button onClick={() => setShowPinyin(!showPinyin)}>
           {showPinyin ? "🈶 Pinyin ✓" : "🈶 Pinyin"}
         </button>
+        <button onClick={onNavigateToCreate}>✏️ Create Blog</button>
         <button>⚙️ Settings</button>
       </footer>
     </div>

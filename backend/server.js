@@ -38,6 +38,26 @@ app.get("/blogs/:id", async (req, res) => {
   }
 });
 
+app.post("/blogs", async (req, res) => {
+  try {
+    const { title, text, tokens } = req.body;
+    
+    if (!title || !text || !tokens) {
+      return res.status(400).json({ error: "Title, text, and tokens are required" });
+    }
+
+    const { rows } = await pool.query(
+      "INSERT INTO blogs (title, text, tokens) VALUES ($1, $2, $3) RETURNING id, title, text, tokens, created_at",
+      [title, text, JSON.stringify(tokens)]
+    );
+    
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '0.0.0.0';
