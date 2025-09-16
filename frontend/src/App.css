@@ -29,6 +29,12 @@
   color: white;
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .logout-button {
   background: #3a3a70;
   color: white;
@@ -43,6 +49,22 @@
 
 .logout-button:hover {
   background: #4a4a80;
+}
+
+.admin-button {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.admin-button:hover {
+  background: #f57c00;
 }
 
 .App-logo {

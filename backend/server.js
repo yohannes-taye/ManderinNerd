@@ -21,12 +21,16 @@ const pool = new Pool({
 
 // Import auth routes and middleware
 const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 const { requireAuthAndActivation } = require('./middleware/auth');
 
 app.get("/", (req, res) => res.send("API is running"));
 
 // Auth routes (public)
 app.use('/auth', authRoutes);
+
+// Admin routes (protected)
+app.use('/admin', adminRoutes);
 
 // Public user listing (for admin purposes - you might want to protect this)
 app.get("/users", async (req, res) => {

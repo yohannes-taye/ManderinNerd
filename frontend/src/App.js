@@ -7,6 +7,7 @@ import ActivationPage from "./pages/ActivationPage";
 import LessonPage from "./pages/LessonPage";
 import CreateBlogPage from "./pages/CreateBlogPage";
 import BlogManagementPage from "./pages/BlogManagementPage";
+import AdminDashboard from "./pages/AdminDashboard";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -15,7 +16,7 @@ function AppContent() {
   const [currentPage, setCurrentPage] = useState("lesson");
   const [createdBlogs, setCreatedBlogs] = useState([]);
   const [authPage, setAuthPage] = useState(null);
-  const { logout, isAuthenticated, isActivated, loading } = useAuth();
+  const { logout, isAuthenticated, isActivated, loading, user } = useAuth();
 
   const navigateToCreateBlog = () => {
     setCurrentPage("create");
@@ -23,6 +24,10 @@ function AppContent() {
 
   const navigateToBlogManagement = () => {
     setCurrentPage("manage");
+  };
+
+  const navigateToAdmin = () => {
+    setCurrentPage("admin");
   };
 
   const navigateToLesson = () => {
@@ -115,9 +120,16 @@ function AppContent() {
           <div className="app-content">
             <header className="app-header">
               <h1>Mandarin Nerd</h1>
-              <button onClick={handleLogout} className="logout-button">
-                Logout
-              </button>
+              <div className="header-actions">
+                {user?.is_admin && (
+                  <button onClick={navigateToAdmin} className="admin-button">
+                    Admin Dashboard
+                  </button>
+                )}
+                <button onClick={handleLogout} className="logout-button">
+                  Logout
+                </button>
+              </div>
             </header>
             
             {currentPage === "lesson" && (
@@ -134,6 +146,11 @@ function AppContent() {
             )}
             {currentPage === "manage" && (
               <BlogManagementPage 
+                onNavigateBack={navigateToLesson}
+              />
+            )}
+            {currentPage === "admin" && (
+              <AdminDashboard 
                 onNavigateBack={navigateToLesson}
               />
             )}

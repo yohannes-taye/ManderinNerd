@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import './LoginPage.css';
 
 const LoginPage = ({ onNavigateToRegister, onNavigateToActivate, onLoginSuccess }) => {
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [activationCode, setActivationCode] = useState('');
-  const [showActivationCode, setShowActivationCode] = useState(false);
   
   const {
     register,
@@ -17,16 +14,6 @@ const LoginPage = ({ onNavigateToRegister, onNavigateToActivate, onLoginSuccess 
     formState: { errors }
   } = useForm();
 
-  const generateActivationCode = async () => {
-    try {
-      const response = await axios.get('/auth/generate-code');
-      setActivationCode(response.data.activationCode);
-      setShowActivationCode(true);
-      toast.success('Activation code generated!');
-    } catch (error) {
-      toast.error('Failed to generate activation code');
-    }
-  };
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -128,25 +115,6 @@ const LoginPage = ({ onNavigateToRegister, onNavigateToActivate, onLoginSuccess 
             </button>
           </p>
           
-          <div className="activation-code-section">
-            <button 
-              type="button" 
-              className="generate-code-button"
-              onClick={generateActivationCode}
-            >
-              Get Activation Code
-            </button>
-            
-            {showActivationCode && (
-              <div className="activation-code-display">
-                <p><strong>Your activation code:</strong></p>
-                <div className="code-box">
-                  {activationCode}
-                </div>
-                <p className="code-instruction">Use this code to register a new account</p>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>

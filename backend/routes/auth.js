@@ -34,8 +34,8 @@ const generateActivationCode = () => {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
-// Store valid activation codes (in production, use a database table)
-const validActivationCodes = new Set();
+// Import shared activation codes
+const { validActivationCodes } = require('../shared/activationCodes');
 
 // Validation rules
 const registerValidation = [
@@ -253,16 +253,6 @@ router.get('/verify', async (req, res) => {
   }
 });
 
-// Generate activation code endpoint
-router.get('/generate-code', (req, res) => {
-  const activationCode = generateActivationCode();
-  validActivationCodes.add(activationCode);
-  
-  res.json({ 
-    activationCode,
-    message: 'Activation code generated successfully. Use this code to register.' 
-  });
-});
 
 // Logout endpoint (client-side token removal)
 router.post('/logout', (req, res) => {
