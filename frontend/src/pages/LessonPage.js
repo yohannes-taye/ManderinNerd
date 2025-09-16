@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import "./LessonPage.css";
 
 function LessonPage({ onNavigateToCreate, onNavigateToManage }) {
@@ -14,49 +15,29 @@ function LessonPage({ onNavigateToCreate, onNavigateToManage }) {
   const [hoverWord, setHoverWord] = useState(null);
 
   useEffect(() => {
-    // Fetch blog with ID = 2 (the one you seeded)
-    const getApiUrl = () => {
-      // In production, use environment variable or relative URL
-      if (process.env.NODE_ENV === 'production') {
-        return process.env.REACT_APP_API_URL || 'http://68.183.250.107:5000';
-      }
-      // In development, use environment variable or localhost
-      return process.env.REACT_APP_API_URL || 'http://localhost:5000';
-    };
-
-    const apiUrl = getApiUrl();
-    const fetchUrl = apiUrl ? `${apiUrl}/blogs/1` : '/blogs/1';
-    
-    console.log('Final API URL used:', fetchUrl);
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
-    
-    fetch(fetchUrl)
-      .then((res) => {
-        console.log('Response status:', res.status);
-        console.log('Response headers:', res.headers);
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log('Successfully fetched blog data:', data);
-        setBlog(data);
-      })
-      .catch((error) => {
+    // Fetch blog with ID = 1 using authenticated axios request
+    const fetchBlog = async () => {
+      try {
+        console.log('Fetching blog data...');
+        const response = await axios.get('/blogs/1');
+        console.log('Successfully fetched blog data:', response.data);
+        setBlog(response.data);
+      } catch (error) {
         console.error('Error fetching blog:', error);
         console.error('Error details:', {
           message: error.message,
-          stack: error.stack,
-          url: fetchUrl
+          status: error.response?.status,
+          data: error.response?.data
         });
         // Show user-friendly error message
         setBlog({ 
           title: "Error Loading Content", 
           tokens: [{ text: "Unable to load lesson content. Please check your connection.", pinyin: "", meaning: "" }] 
         });
-      });
+      }
+    };
+
+    fetchBlog();
   }, []); 
 
   return (

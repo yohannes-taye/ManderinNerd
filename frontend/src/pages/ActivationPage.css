@@ -1,0 +1,172 @@
+.activation-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #121232;
+  color: #fff;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.activation-container {
+  background: #2c2c54;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #3a3a70;
+}
+
+.activation-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.activation-header h1 {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.activation-header p {
+  color: #ccc;
+  font-size: 16px;
+  margin: 0;
+}
+
+.activation-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #3a3a70;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  background: #1f1f3a;
+  color: #fff;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #d32f2f;
+}
+
+.form-group input.error {
+  border-color: #e74c3c;
+}
+
+.form-group input::placeholder {
+  color: #888;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.help-text {
+  color: #ccc;
+  font-size: 12px;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.activation-button {
+  width: 100%;
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.activation-button:hover:not(:disabled) {
+  background: #b71c1c;
+}
+
+.activation-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.activation-footer {
+  text-align: center;
+}
+
+.activation-footer p {
+  color: #ccc;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+.link-button:hover {
+  color: #ff5722;
+}
+
+.info-box {
+  background: #1f1f3a;
+  border: 1px solid #3a3a70;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.info-box h4 {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.info-box p {
+  color: #ccc;
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .activation-container {
+    padding: 30px 20px;
+  }
+  
+  .activation-header h1 {
+    font-size: 24px;
+  }
+}

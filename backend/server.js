@@ -4,6 +4,10 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
+
+// Trust proxy for rate limiting to work properly with X-Forwarded-For headers
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
@@ -15,15 +19,24 @@ const pool = new Pool({
   port: 5432,
 });
 
+// Import auth routes and middleware
+const authRoutes = require('./routes/auth');
+const { requireAuthAndActivation } = require('./middleware/auth');
+
 app.get("/", (req, res) => res.send("API is running"));
 
+// Auth routes (public)
+app.use('/auth', authRoutes);
+
+// Public user listing (for admin purposes - you might want to protect this)
 app.get("/users", async (req, res) => {
-  const result = await pool.query("SELECT * FROM users");
+  const result = await pool.query("SELECT id, email, is_activated, created_at FROM users");
   res.json(result.rows);
 });
 
+// Protected blog routes - require authentication and activation
 // Get all blogs
-app.get("/blogs", async (req, res) => {
+app.get("/blogs", requireAuthAndActivation, async (req, res) => {
   try {
     const { rows } = await pool.query(
       "SELECT id, title, text, tokens, created_at FROM blogs ORDER BY created_at DESC"
@@ -35,7 +48,7 @@ app.get("/blogs", async (req, res) => {
   }
 });
 
-app.get("/blogs/:id", async (req, res) => {
+app.get("/blogs/:id", requireAuthAndActivation, async (req, res) => {
   try {
     const { rows } = await pool.query(
       "SELECT id, title, text, tokens FROM blogs WHERE id = $1",
@@ -51,7 +64,7 @@ app.get("/blogs/:id", async (req, res) => {
   }
 });
 
-app.post("/blogs", async (req, res) => {
+app.post("/blogs", requireAuthAndActivation, async (req, res) => {
   try {
     const { title, text, tokens } = req.body;
     
@@ -72,7 +85,7 @@ app.post("/blogs", async (req, res) => {
 });
 
 // Update a blog
-app.put("/blogs/:id", async (req, res) => {
+app.put("/blogs/:id", requireAuthAndActivation, async (req, res) => {
   try {
     const { title, text, tokens } = req.body;
     const blogId = req.params.id;
@@ -98,7 +111,7 @@ app.put("/blogs/:id", async (req, res) => {
 });
 
 // Delete a blog
-app.delete("/blogs/:id", async (req, res) => {
+app.delete("/blogs/:id", requireAuthAndActivation, async (req, res) => {
   try {
     const blogId = req.params.id;
     
