@@ -5,6 +5,7 @@ import AdminRoute from "./components/AdminRoute";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ActivationPage from "./pages/ActivationPage";
+import BlogsListPage from "./pages/BlogsListPage";
 import LessonPage from "./pages/LessonPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import { ToastContainer } from 'react-toastify';
@@ -78,6 +79,18 @@ function AppContent() {
             onLoginSuccess={handleLoginSuccess}
             onActivationSuccess={handleActivationSuccess}
           >
+            <BlogsListPageWrapper onLogout={handleLogout} />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/lesson/:blogId" element={
+          <ProtectedRoute
+            onNavigateToLogin={() => window.location.href = '/login'}
+            onNavigateToRegister={() => window.location.href = '/register'}
+            onNavigateToActivate={() => window.location.href = '/activate'}
+            onLoginSuccess={handleLoginSuccess}
+            onActivationSuccess={handleActivationSuccess}
+          >
             <LessonPageWrapper onLogout={handleLogout} />
           </ProtectedRoute>
         } />
@@ -99,11 +112,30 @@ function AppContent() {
 }
 
 // Wrapper components to handle navigation and logout
-function LessonPageWrapper({ onLogout }) {
+function BlogsListPageWrapper({ onLogout }) {
+  const handleSelectBlog = (blogId) => {
+    window.location.href = `/lesson/${blogId}`;
+  };
+
   return (
     <div className="app-content">
       <AppHeader onLogout={onLogout} />
-      <LessonPage />
+      <BlogsListPage onSelectBlog={handleSelectBlog} />
+    </div>
+  );
+}
+
+function LessonPageWrapper({ onLogout }) {
+  const blogId = window.location.pathname.split('/lesson/')[1];
+  
+  const handleBackToBlogs = () => {
+    window.location.href = '/';
+  };
+
+  return (
+    <div className="app-content">
+      <AppHeader onLogout={onLogout} />
+      <LessonPage blogId={blogId} onBackToBlogs={handleBackToBlogs} />
     </div>
   );
 }
@@ -111,7 +143,7 @@ function LessonPageWrapper({ onLogout }) {
 
 
 function AdminDashboardWrapper({ onLogout }) {
-  const navigateToLesson = () => {
+  const navigateToBlogs = () => {
     window.location.href = '/';
   };
 
@@ -119,7 +151,7 @@ function AdminDashboardWrapper({ onLogout }) {
     <div className="app-content">
       <AppHeader onLogout={onLogout} />
       <AdminDashboard 
-        onNavigateBack={navigateToLesson}
+        onNavigateBack={navigateToBlogs}
       />
     </div>
   );

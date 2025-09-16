@@ -16,6 +16,35 @@
   justify-content: space-between;
 }
 
+.lesson-header button {
+  background: #3a3a70;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.lesson-header button:hover {
+  background: #4a4a80;
+}
+
+.article-image-container {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.article-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .lesson-content {
   padding: 1rem;
   flex: 1;

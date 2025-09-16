@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./LessonPage.css";
 
-function LessonPage() {
+function LessonPage({ blogId = 1, onBackToBlogs }) {
   //Just print to the console for testing purposes
   console.log("LessonPage component rendered");
 
@@ -15,11 +15,11 @@ function LessonPage() {
   const [hoverWord, setHoverWord] = useState(null);
 
   useEffect(() => {
-    // Fetch blog with ID = 1 using authenticated axios request
+    // Fetch blog with the provided ID using authenticated axios request
     const fetchBlog = async () => {
       try {
-        console.log('Fetching blog data...');
-        const response = await axios.get('/blogs/1');
+        console.log(`Fetching blog data for ID: ${blogId}...`);
+        const response = await axios.get(`/blogs/${blogId}`);
         console.log('Successfully fetched blog data:', response.data);
         setBlog(response.data);
       } catch (error) {
@@ -38,15 +38,29 @@ function LessonPage() {
     };
 
     fetchBlog();
-  }, []); 
+  }, [blogId]); 
 
   return (
     <div className="lesson-page">
       {/* Header */}
       <header className="lesson-header">
-        <button>{"< Back"}</button>
+        <button onClick={onBackToBlogs}>{"< Back to Articles"}</button>
         <h2>{blog ? blog.title : "Loading..."}</h2>
       </header>
+
+      {/* Article Image */}
+      {blog && blog.image_url && (
+        <div className="article-image-container">
+          <img 
+            src={blog.image_url} 
+            alt={blog.image_alt || blog.title}
+            className="article-image"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="lesson-content">

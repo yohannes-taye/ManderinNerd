@@ -43,7 +43,7 @@ app.get("/users", async (req, res) => {
 app.get("/blogs", requireAuthAndActivation, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT id, title, text, tokens, created_at FROM blogs ORDER BY created_at DESC"
+      "SELECT id, title, text, tokens, image_url, image_alt, created_at FROM blogs ORDER BY created_at DESC"
     );
     res.json(rows);
   } catch (err) {
@@ -55,7 +55,7 @@ app.get("/blogs", requireAuthAndActivation, async (req, res) => {
 app.get("/blogs/:id", requireAuthAndActivation, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT id, title, text, tokens FROM blogs WHERE id = $1",
+      "SELECT id, title, text, tokens, image_url, image_alt FROM blogs WHERE id = $1",
       [req.params.id]
     );
     if (!rows.length) {
@@ -70,15 +70,15 @@ app.get("/blogs/:id", requireAuthAndActivation, async (req, res) => {
 
 app.post("/blogs", requireAuthAndActivation, async (req, res) => {
   try {
-    const { title, text, tokens } = req.body;
+    const { title, text, tokens, image_url, image_alt } = req.body;
     
     if (!title || !text || !tokens) {
       return res.status(400).json({ error: "Title, text, and tokens are required" });
     }
 
     const { rows } = await pool.query(
-      "INSERT INTO blogs (title, text, tokens) VALUES ($1, $2, $3) RETURNING id, title, text, tokens, created_at",
-      [title, text, JSON.stringify(tokens)]
+      "INSERT INTO blogs (title, text, tokens, image_url, image_alt) VALUES ($1, $2, $3, $4, $5) RETURNING id, title, text, tokens, image_url, image_alt, created_at",
+      [title, text, JSON.stringify(tokens), image_url || null, image_alt || null]
     );
     
     res.status(201).json(rows[0]);
@@ -91,7 +91,7 @@ app.post("/blogs", requireAuthAndActivation, async (req, res) => {
 // Update a blog
 app.put("/blogs/:id", requireAuthAndActivation, async (req, res) => {
   try {
-    const { title, text, tokens } = req.body;
+    const { title, text, tokens, image_url, image_alt } = req.body;
     const blogId = req.params.id;
     
     if (!title || !text || !tokens) {
@@ -99,8 +99,8 @@ app.put("/blogs/:id", requireAuthAndActivation, async (req, res) => {
     }
 
     const { rows } = await pool.query(
-      "UPDATE blogs SET title = $1, text = $2, tokens = $3 WHERE id = $4 RETURNING id, title, text, tokens, created_at",
-      [title, text, JSON.stringify(tokens), blogId]
+      "UPDATE blogs SET title = $1, text = $2, tokens = $3, image_url = $4, image_alt = $5 WHERE id = $6 RETURNING id, title, text, tokens, image_url, image_alt, created_at",
+      [title, text, JSON.stringify(tokens), image_url || null, image_alt || null, blogId]
     );
     
     if (!rows.length) {
