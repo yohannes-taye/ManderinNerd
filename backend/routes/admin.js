@@ -71,12 +71,36 @@ router.put('/users/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { is_activated, is_admin } = req.body;
     
+    // Build dynamic query based on provided fields
+    const updates = [];
+    const values = [];
+    let paramCount = 1;
+    
+    if (is_activated !== undefined) {
+      updates.push(`is_activated = $${paramCount}`);
+      values.push(is_activated);
+      paramCount++;
+    }
+    
+    if (is_admin !== undefined) {
+      updates.push(`is_admin = $${paramCount}`);
+      values.push(is_admin);
+      paramCount++;
+    }
+    
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No valid fields to update' });
+    }
+    
+    // Add the user ID as the last parameter
+    values.push(id);
+    
     const { rows } = await pool.query(`
       UPDATE users 
-      SET is_activated = $1, is_admin = $2 
-      WHERE id = $3 
+      SET ${updates.join(', ')} 
+      WHERE id = $${paramCount} 
       RETURNING id, email, is_activated, is_admin
-    `, [is_activated, is_admin, id]);
+    `, values);
     
     if (rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });

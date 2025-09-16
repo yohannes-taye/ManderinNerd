@@ -249,7 +249,7 @@ function BlogManagementPage({ onNavigateBack }) {
     return (
       <div className="blog-management-page">
         <header className="blog-management-header">
-          <button onClick={onNavigateBack}>{"< Back"}</button>
+          <button onClick={() => window.location.href = '/'}>{"< Back"}</button>
           <h2>Manage Blogs</h2>
         </header>
         <div className="loading">Loading blogs...</div>
@@ -261,7 +261,7 @@ function BlogManagementPage({ onNavigateBack }) {
     <div className="blog-management-page">
       {/* Header */}
       <header className="blog-management-header">
-        <button onClick={onNavigateBack}>{"< Back"}</button>
+        <button onClick={() => window.location.href = '/'}>{"< Back"}</button>
         <h2>Manage Blogs</h2>
         <div className="blog-count">
           📊 {blogs.length} blog{blogs.length !== 1 ? 's' : ''}
@@ -558,7 +558,7 @@ function BlogManagementPage({ onNavigateBack }) {
 
       {/* Bottom Navigation */}
       <footer className="blog-management-footer">
-        <button onClick={onNavigateBack}>📖 Back to Lesson</button>
+        <button onClick={() => window.location.href = '/'}>📖 Back to Lesson</button>
         <button onClick={fetchBlogs}>🔄 Refresh</button>
       </footer>
     </div>

@@ -160,9 +160,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
       }
       
       // Navigate back
-      if (onNavigateBack) {
-        onNavigateBack();
-      }
+      window.location.href = '/';
     } catch (err) {
       console.error('Error creating blog:', err);
       setError('Failed to create blog. Please try again.');
@@ -175,7 +173,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
     <div className="create-blog-page">
       {/* Header */}
       <header className="create-blog-header">
-        <button onClick={onNavigateBack}>{"< Back"}</button>
+        <button onClick={() => window.location.href = '/'}>{"< Back"}</button>
         <h2>Create New Blog</h2>
       </header>
 
@@ -381,7 +379,7 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
 
       {/* Bottom Navigation */}
       <footer className="create-blog-footer">
-        <button onClick={onNavigateBack}>📖 Back to Lesson</button>
+        <button onClick={() => window.location.href = '/'}>📖 Back to Lesson</button>
         <button type="button" onClick={() => {
           setTitle("");
           setText("");

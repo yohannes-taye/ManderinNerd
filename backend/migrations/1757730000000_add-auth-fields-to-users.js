@@ -15,7 +15,7 @@ exports.up = (pgm) => {
   // Create index on is_activated for faster filtering
   pgm.createIndex("users", "is_activated");
 };
-
+    
 exports.down = (pgm) => {
   // Drop indexes first
   pgm.dropIndex("users", "is_activated");

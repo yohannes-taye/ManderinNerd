@@ -147,7 +147,7 @@ const AdminDashboard = ({ onNavigateBack }) => {
     <div className="admin-dashboard">
       <header className="admin-header">
         <h1>Admin Dashboard</h1>
-        <button onClick={onNavigateBack} className="back-button">
+        <button onClick={() => window.location.href = '/'} className="back-button">
           ← Back to App
         </button>
       </header>

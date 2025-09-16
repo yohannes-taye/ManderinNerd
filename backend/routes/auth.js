@@ -157,7 +157,7 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
 
     // Find user
     const user = await pool.query(
-      'SELECT id, email, password_hash, is_activated, login_attempts, locked_until FROM users WHERE email = $1',
+      'SELECT id, email, password_hash, is_activated, is_admin, login_attempts, locked_until FROM users WHERE email = $1',
       [email]
     );
 
@@ -212,7 +212,8 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
       user: {
         id: userData.id,
         email: userData.email,
-        is_activated: userData.is_activated
+        is_activated: userData.is_activated,
+        is_admin: userData.is_admin
       }
     });
 
@@ -235,7 +236,7 @@ router.get('/verify', async (req, res) => {
     
     // Get user data
     const user = await pool.query(
-      'SELECT id, email, is_activated FROM users WHERE id = $1',
+      'SELECT id, email, is_activated, is_admin FROM users WHERE id = $1',
       [decoded.userId]
     );
 
