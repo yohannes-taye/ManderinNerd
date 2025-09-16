@@ -12,6 +12,19 @@ const AdminDashboard = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState({ email: '', password: '', is_admin: false });
   const [showNewUserForm, setShowNewUserForm] = useState(false);
+  
+  // Blog creation and editing states
+  const [showCreateBlogForm, setShowCreateBlogForm] = useState(false);
+  const [editingBlog, setEditingBlog] = useState(null);
+  const [newBlog, setNewBlog] = useState({ title: '', text: '', tokens: [] });
+  const [editBlog, setEditBlog] = useState({ title: '', text: '', tokens: [] });
+  const [currentToken, setCurrentToken] = useState({ text: '', pinyin: '', meaning: '' });
+  const [editingToken, setEditingToken] = useState(null);
+  const [editToken, setEditToken] = useState({ text: '', pinyin: '', meaning: '' });
+  const [jsonInput, setJsonInput] = useState('');
+  const [jsonError, setJsonError] = useState('');
+  const [constructSentence, setConstructSentence] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -136,6 +149,247 @@ const AdminDashboard = ({ onNavigateBack }) => {
     } catch (error) {
       console.error('Error deleting blog:', error);
       toast.error('Failed to delete blog');
+    }
+  };
+
+  // Blog creation and editing functions
+  const handleCreateBlog = () => {
+    setShowCreateBlogForm(true);
+    setNewBlog({ title: '', text: '', tokens: [] });
+    setCurrentToken({ text: '', pinyin: '', meaning: '' });
+    setEditingToken(null);
+    setEditToken({ text: '', pinyin: '', meaning: '' });
+    setJsonInput('');
+    setJsonError('');
+    setConstructSentence(true);
+  };
+
+  const handleEditBlog = (blog) => {
+    setEditingBlog(blog.id);
+    setEditBlog({
+      title: blog.title,
+      text: blog.text,
+      tokens: blog.tokens || []
+    });
+    setCurrentToken({ text: '', pinyin: '', meaning: '' });
+    setEditingToken(null);
+    setEditToken({ text: '', pinyin: '', meaning: '' });
+    setJsonInput('');
+    setJsonError('');
+    setConstructSentence(true);
+  };
+
+  const handleCancelCreate = () => {
+    setShowCreateBlogForm(false);
+    setNewBlog({ title: '', text: '', tokens: [] });
+    setCurrentToken({ text: '', pinyin: '', meaning: '' });
+    setEditingToken(null);
+    setEditToken({ text: '', pinyin: '', meaning: '' });
+    setJsonInput('');
+    setJsonError('');
+    setConstructSentence(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingBlog(null);
+    setEditBlog({ title: '', text: '', tokens: [] });
+    setCurrentToken({ text: '', pinyin: '', meaning: '' });
+    setEditingToken(null);
+    setEditToken({ text: '', pinyin: '', meaning: '' });
+    setJsonInput('');
+    setJsonError('');
+    setConstructSentence(true);
+  };
+
+  // Token management functions
+  const addToken = (isEdit = false) => {
+    if (currentToken.text && currentToken.pinyin && currentToken.meaning) {
+      if (isEdit) {
+        const newTokens = [...editBlog.tokens, { ...currentToken }];
+        const constructedSentence = newTokens.map(token => token.text).join('');
+        setEditBlog({
+          ...editBlog,
+          tokens: newTokens,
+          text: constructedSentence
+        });
+      } else {
+        const newTokens = [...newBlog.tokens, { ...currentToken }];
+        const constructedSentence = newTokens.map(token => token.text).join('');
+        setNewBlog({
+          ...newBlog,
+          tokens: newTokens,
+          text: constructedSentence
+        });
+      }
+      setCurrentToken({ text: '', pinyin: '', meaning: '' });
+    }
+  };
+
+  const removeToken = (index, isEdit = false) => {
+    if (isEdit) {
+      const newTokens = editBlog.tokens.filter((_, i) => i !== index);
+      const constructedSentence = newTokens.map(token => token.text).join('');
+      setEditBlog({
+        ...editBlog,
+        tokens: newTokens,
+        text: constructedSentence
+      });
+    } else {
+      const newTokens = newBlog.tokens.filter((_, i) => i !== index);
+      const constructedSentence = newTokens.map(token => token.text).join('');
+      setNewBlog({
+        ...newBlog,
+        tokens: newTokens,
+        text: constructedSentence
+      });
+    }
+  };
+
+  const startEditingToken = (index, isEdit = false) => {
+    setEditingToken(index);
+    const tokens = isEdit ? editBlog.tokens : newBlog.tokens;
+    setEditToken({ ...tokens[index] });
+  };
+
+  const saveTokenEdit = (index, isEdit = false) => {
+    if (editToken.text && editToken.pinyin && editToken.meaning) {
+      if (isEdit) {
+        const updatedTokens = [...editBlog.tokens];
+        updatedTokens[index] = { ...editToken };
+        const newTokens = updatedTokens;
+        const constructedSentence = newTokens.map(token => token.text).join('');
+        setEditBlog({
+          ...editBlog,
+          tokens: updatedTokens,
+          text: constructedSentence
+        });
+      } else {
+        const updatedTokens = [...newBlog.tokens];
+        updatedTokens[index] = { ...editToken };
+        const newTokens = updatedTokens;
+        const constructedSentence = newTokens.map(token => token.text).join('');
+        setNewBlog({
+          ...newBlog,
+          tokens: updatedTokens,
+          text: constructedSentence
+        });
+      }
+      setEditingToken(null);
+      setEditToken({ text: '', pinyin: '', meaning: '' });
+    }
+  };
+
+  const cancelTokenEdit = () => {
+    setEditingToken(null);
+    setEditToken({ text: '', pinyin: '', meaning: '' });
+  };
+
+  const parseJsonTokens = (isEdit = false) => {
+    setJsonError('');
+    
+    if (!jsonInput.trim()) {
+      setJsonError('Please enter JSON data');
+      return;
+    }
+
+    try {
+      const parsedTokens = JSON.parse(jsonInput);
+      
+      if (!Array.isArray(parsedTokens)) {
+        setJsonError('JSON must be an array of token objects');
+        return;
+      }
+
+      const validTokens = parsedTokens.filter(token => {
+        return token && 
+               typeof token.text === 'string' && 
+               typeof token.pinyin === 'string' && 
+               typeof token.meaning === 'string' &&
+               token.text.trim() && 
+               token.pinyin.trim() && 
+               token.meaning.trim();
+      });
+
+      if (validTokens.length === 0) {
+        setJsonError('No valid tokens found. Each token must have \'text\', \'pinyin\', and \'meaning\' fields');
+        return;
+      }
+
+      if (validTokens.length !== parsedTokens.length) {
+        setJsonError(`Only ${validTokens.length} out of ${parsedTokens.length} tokens are valid. Invalid tokens were skipped.`);
+      }
+
+      if (isEdit) {
+        const newTokens = [...editBlog.tokens, ...validTokens];
+        const constructedSentence = newTokens.map(token => token.text).join('');
+        setEditBlog({
+          ...editBlog,
+          tokens: newTokens,
+          text: constructedSentence
+        });
+      } else {
+        const newTokens = [...newBlog.tokens, ...validTokens];
+        const constructedSentence = newTokens.map(token => token.text).join('');
+        setNewBlog({
+          ...newBlog,
+          tokens: newTokens,
+          text: constructedSentence
+        });
+      }
+      
+      setJsonInput('');
+      setJsonError('');
+      
+    } catch (err) {
+      setJsonError(`Invalid JSON format: ${err.message}`);
+    }
+  };
+
+  const clearJsonInput = () => {
+    setJsonInput('');
+    setJsonError('');
+  };
+
+  const handleCreateBlogSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post('/blogs', newBlog);
+      toast.success('Blog created successfully');
+      setShowCreateBlogForm(false);
+      setNewBlog({ title: '', text: '', tokens: [] });
+      setCurrentToken({ text: '', pinyin: '', meaning: '' });
+      setEditingToken(null);
+      setEditToken({ text: '', pinyin: '', meaning: '' });
+      setJsonInput('');
+      setJsonError('');
+      setConstructSentence(true);
+      fetchBlogs();
+    } catch (error) {
+      console.error('Error creating blog:', error);
+      toast.error('Failed to create blog');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditBlogSubmit = async () => {
+    try {
+      await axios.put(`/blogs/${editingBlog}`, editBlog);
+      toast.success('Blog updated successfully');
+      setEditingBlog(null);
+      setEditBlog({ title: '', text: '', tokens: [] });
+      setCurrentToken({ text: '', pinyin: '', meaning: '' });
+      setEditingToken(null);
+      setEditToken({ text: '', pinyin: '', meaning: '' });
+      setJsonInput('');
+      setJsonError('');
+      setConstructSentence(true);
+      fetchBlogs();
+    } catch (error) {
+      console.error('Error updating blog:', error);
+      toast.error('Failed to update blog');
     }
   };
 
@@ -317,37 +571,465 @@ const AdminDashboard = ({ onNavigateBack }) => {
 
           {activeTab === 'blogs' && (
             <div className="blogs-section">
-              <h2>Blog Management</h2>
-              <div className="blogs-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Created</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
-                      <tr><td colSpan="3">Loading...</td></tr>
-                    ) : (
-                      blogs.map(blog => (
-                        <tr key={blog.id}>
-                          <td>{blog.title}</td>
-                          <td>{formatDate(blog.created_at)}</td>
-                          <td>
+              <div className="section-header">
+                <h2>Blog Management</h2>
+                <button 
+                  className="add-button"
+                  onClick={handleCreateBlog}
+                >
+                  Create Blog
+                </button>
+              </div>
+
+              {showCreateBlogForm && (
+                <div className="create-blog-form">
+                  <h3>Create New Blog</h3>
+                  <form onSubmit={handleCreateBlogSubmit}>
+                    <div className="form-group">
+                      <label>Title:</label>
+                      <input
+                        type="text"
+                        value={newBlog.title}
+                        onChange={(e) => setNewBlog({...newBlog, title: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Chinese Text:</label>
+                      <textarea
+                        value={newBlog.text}
+                        onChange={(e) => setNewBlog({...newBlog, text: e.target.value})}
+                        rows="6"
+                        required
+                      />
+                    </div>
+
+                    {/* Token Management */}
+                    <div className="form-group">
+                      <div className="token-header">
+                        <label>Vocabulary Tokens:</label>
+                        <span className="token-counter">
+                          📊 {newBlog.tokens.length} token{newBlog.tokens.length !== 1 ? 's' : ''}
+                        </span>
+                      </div>
+                      
+                      {/* JSON Import Section */}
+                      <div className="json-import-section">
+                        <label htmlFor="json-input" className="json-import-label">
+                          📋 Import from JSON Array:
+                        </label>
+                        <div className="json-input-container">
+                          <textarea
+                            id="json-input"
+                            value={jsonInput}
+                            onChange={(e) => setJsonInput(e.target.value)}
+                            placeholder="Paste your JSON array here..."
+                            rows="6"
+                            className="json-textarea"
+                          />
+                          <div className="json-options">
+                            <label className="json-checkbox-label">
+                              <input
+                                type="checkbox"
+                                checked={constructSentence}
+                                onChange={(e) => setConstructSentence(e.target.checked)}
+                                className="json-checkbox"
+                              />
+                              <span className="checkbox-text">Construct sentence from tokens</span>
+                            </label>
+                          </div>
+                          <div className="json-buttons">
+                            <button 
+                              type="button" 
+                              onClick={() => parseJsonTokens(false)} 
+                              className="parse-json-btn"
+                              disabled={!jsonInput.trim()}
+                            >
+                              📥 Import Tokens
+                            </button>
+                            <button 
+                              type="button" 
+                              onClick={clearJsonInput} 
+                              className="clear-json-btn"
+                              disabled={!jsonInput.trim()}
+                            >
+                              🗑️ Clear
+                            </button>
+                          </div>
+                        </div>
+                        {jsonError && <div className="json-error">{jsonError}</div>}
+                      </div>
+                      
+                      {/* Add Token Form */}
+                      <div className="token-input">
+                        <input
+                          type="text"
+                          placeholder="Chinese character/word"
+                          value={currentToken.text}
+                          onChange={(e) => setCurrentToken({...currentToken, text: e.target.value})}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Pinyin"
+                          value={currentToken.pinyin}
+                          onChange={(e) => setCurrentToken({...currentToken, pinyin: e.target.value})}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Meaning"
+                          value={currentToken.meaning}
+                          onChange={(e) => setCurrentToken({...currentToken, meaning: e.target.value})}
+                        />
+                        <button type="button" onClick={() => addToken(false)} className="add-token-btn">
+                          Add Token
+                        </button>
+                      </div>
+
+                      {/* Token List */}
+                      <div className="token-list">
+                        {newBlog.tokens.map((token, index) => (
+                          <div key={index} className="token-item">
+                            {editingToken === index ? (
+                              <div className="token-edit">
+                                <input
+                                  type="text"
+                                  value={editToken.text}
+                                  onChange={(e) => setEditToken({...editToken, text: e.target.value})}
+                                  className="edit-input"
+                                  placeholder="Chinese text"
+                                />
+                                <input
+                                  type="text"
+                                  value={editToken.pinyin}
+                                  onChange={(e) => setEditToken({...editToken, pinyin: e.target.value})}
+                                  className="edit-input"
+                                  placeholder="Pinyin"
+                                />
+                                <input
+                                  type="text"
+                                  value={editToken.meaning}
+                                  onChange={(e) => setEditToken({...editToken, meaning: e.target.value})}
+                                  className="edit-input"
+                                  placeholder="Meaning"
+                                />
+                                <div className="edit-buttons">
+                                  <button 
+                                    type="button" 
+                                    onClick={() => saveTokenEdit(index, false)}
+                                    className="save-edit-btn"
+                                  >
+                                    ✓
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    onClick={cancelTokenEdit}
+                                    className="cancel-edit-btn"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <span className="token-text">{token.text}</span>
+                                <span className="token-pinyin">({token.pinyin})</span>
+                                <span className="token-meaning">→ {token.meaning}</span>
+                                <div className="token-actions">
+                                  <button 
+                                    type="button" 
+                                    onClick={() => startEditingToken(index, false)}
+                                    className="edit-token-btn"
+                                    title="Edit token"
+                                  >
+                                    ✏️
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    onClick={() => removeToken(index, false)}
+                                    className="remove-token-btn"
+                                    title="Remove token"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="form-actions">
+                      <button 
+                        type="submit" 
+                        className="submit-btn"
+                        disabled={isSubmitting || !newBlog.title || !newBlog.text || newBlog.tokens.length === 0}
+                      >
+                        {isSubmitting ? "Creating..." : "Create Blog"}
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={handleCancelCreate}
+                        className="cancel-btn"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              <div className="blogs-list">
+                {loading ? (
+                  <div className="loading">Loading blogs...</div>
+                ) : (
+                  blogs.map(blog => (
+                    <div key={blog.id} className="blog-card">
+                      {editingBlog === blog.id ? (
+                        // Edit Mode - Full Form
+                        <div className="blog-edit-form">
+                          <h3>Edit Blog</h3>
+                          <div className="form-group">
+                            <label>Title:</label>
+                            <input
+                              type="text"
+                              value={editBlog.title}
+                              onChange={(e) => setEditBlog({...editBlog, title: e.target.value})}
+                              className="edit-input"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Chinese Text:</label>
+                            <textarea
+                              value={editBlog.text}
+                              onChange={(e) => setEditBlog({...editBlog, text: e.target.value})}
+                              className="edit-textarea"
+                              rows="4"
+                            />
+                          </div>
+
+                          {/* Token Management */}
+                          <div className="form-group">
+                            <div className="token-header">
+                              <label>Vocabulary Tokens:</label>
+                              <span className="token-counter">
+                                📊 {editBlog.tokens.length} token{editBlog.tokens.length !== 1 ? 's' : ''}
+                              </span>
+                            </div>
+                            
+                            {/* JSON Import Section */}
+                            <div className="json-import-section">
+                              <label htmlFor="json-input-edit" className="json-import-label">
+                                📋 Import from JSON Array:
+                              </label>
+                              <div className="json-input-container">
+                                <textarea
+                                  id="json-input-edit"
+                                  value={jsonInput}
+                                  onChange={(e) => setJsonInput(e.target.value)}
+                                  placeholder="Paste your JSON array here..."
+                                  rows="6"
+                                  className="json-textarea"
+                                />
+                                <div className="json-options">
+                                  <label className="json-checkbox-label">
+                                    <input
+                                      type="checkbox"
+                                      checked={constructSentence}
+                                      onChange={(e) => setConstructSentence(e.target.checked)}
+                                      className="json-checkbox"
+                                    />
+                                    <span className="checkbox-text">Construct sentence from tokens</span>
+                                  </label>
+                                </div>
+                                <div className="json-buttons">
+                                  <button 
+                                    type="button" 
+                                    onClick={() => parseJsonTokens(true)} 
+                                    className="parse-json-btn"
+                                    disabled={!jsonInput.trim()}
+                                  >
+                                    📥 Import Tokens
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    onClick={clearJsonInput} 
+                                    className="clear-json-btn"
+                                    disabled={!jsonInput.trim()}
+                                  >
+                                    🗑️ Clear
+                                  </button>
+                                </div>
+                              </div>
+                              {jsonError && <div className="json-error">{jsonError}</div>}
+                            </div>
+                            
+                            {/* Add Token Form */}
+                            <div className="token-input">
+                              <input
+                                type="text"
+                                placeholder="Chinese character/word"
+                                value={currentToken.text}
+                                onChange={(e) => setCurrentToken({...currentToken, text: e.target.value})}
+                              />
+                              <input
+                                type="text"
+                                placeholder="Pinyin"
+                                value={currentToken.pinyin}
+                                onChange={(e) => setCurrentToken({...currentToken, pinyin: e.target.value})}
+                              />
+                              <input
+                                type="text"
+                                placeholder="Meaning"
+                                value={currentToken.meaning}
+                                onChange={(e) => setCurrentToken({...currentToken, meaning: e.target.value})}
+                              />
+                              <button type="button" onClick={() => addToken(true)} className="add-token-btn">
+                                Add Token
+                              </button>
+                            </div>
+
+                            {/* Token List */}
+                            <div className="token-list">
+                              {editBlog.tokens.map((token, index) => (
+                                <div key={index} className="token-item">
+                                  {editingToken === index ? (
+                                    <div className="token-edit">
+                                      <input
+                                        type="text"
+                                        value={editToken.text}
+                                        onChange={(e) => setEditToken({...editToken, text: e.target.value})}
+                                        className="edit-input"
+                                        placeholder="Chinese text"
+                                      />
+                                      <input
+                                        type="text"
+                                        value={editToken.pinyin}
+                                        onChange={(e) => setEditToken({...editToken, pinyin: e.target.value})}
+                                        className="edit-input"
+                                        placeholder="Pinyin"
+                                      />
+                                      <input
+                                        type="text"
+                                        value={editToken.meaning}
+                                        onChange={(e) => setEditToken({...editToken, meaning: e.target.value})}
+                                        className="edit-input"
+                                        placeholder="Meaning"
+                                      />
+                                      <div className="edit-buttons">
+                                        <button 
+                                          type="button" 
+                                          onClick={() => saveTokenEdit(index, true)}
+                                          className="save-edit-btn"
+                                        >
+                                          ✓
+                                        </button>
+                                        <button 
+                                          type="button" 
+                                          onClick={cancelTokenEdit}
+                                          className="cancel-edit-btn"
+                                        >
+                                          ✕
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <span className="token-text">{token.text}</span>
+                                      <span className="token-pinyin">({token.pinyin})</span>
+                                      <span className="token-meaning">→ {token.meaning}</span>
+                                      <div className="token-actions">
+                                        <button 
+                                          type="button" 
+                                          onClick={() => startEditingToken(index, true)}
+                                          className="edit-token-btn"
+                                          title="Edit token"
+                                        >
+                                          ✏️
+                                        </button>
+                                        <button 
+                                          type="button" 
+                                          onClick={() => removeToken(index, true)}
+                                          className="remove-token-btn"
+                                          title="Remove token"
+                                        >
+                                          ×
+                                        </button>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="edit-actions">
+                            <button onClick={handleEditBlogSubmit} className="save-btn">
+                              💾 Save
+                            </button>
+                            <button onClick={handleCancelEdit} className="cancel-btn">
+                              ❌ Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        // Display Mode
+                        <>
+                          <div className="blog-header">
+                            <h3 className="blog-title">{blog.title}</h3>
+                            <div className="blog-meta">
+                              <span className="blog-date">
+                                📅 {formatDate(blog.created_at)}
+                              </span>
+                              <span className="blog-tokens">
+                                🏷️ {blog.tokens?.length || 0} tokens
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="blog-content">
+                            <p className="blog-text">{blog.text}</p>
+                            
+                            {blog.tokens && blog.tokens.length > 0 && (
+                              <div className="blog-tokens-preview">
+                                <strong>Vocabulary:</strong>
+                                <div className="tokens-list">
+                                  {blog.tokens.slice(0, 5).map((token, index) => (
+                                    <span key={index} className="token-item">
+                                      {token.text} ({token.pinyin}) → {token.meaning}
+                                    </span>
+                                  ))}
+                                  {blog.tokens.length > 5 && (
+                                    <span className="more-tokens">
+                                      +{blog.tokens.length - 5} more...
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="blog-actions">
+                            <button 
+                              onClick={() => handleEditBlog(blog)}
+                              className="edit-btn"
+                              title="Edit blog"
+                            >
+                              ✏️ Edit
+                            </button>
                             <button 
                               onClick={() => deleteBlog(blog.id)}
-                              className="delete-button"
+                              className="delete-btn"
+                              title="Delete blog"
                             >
-                              Delete
+                              🗑️ Delete
                             </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

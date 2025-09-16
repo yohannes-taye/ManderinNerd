@@ -105,18 +105,24 @@ function BlogManagementPage({ onNavigateBack }) {
   // Token management functions
   const addToken = () => {
     if (currentToken.text && currentToken.pinyin && currentToken.meaning) {
+      const newTokens = [...editForm.tokens, { ...currentToken }];
+      const constructedSentence = newTokens.map(token => token.text).join('');
       setEditForm({
         ...editForm,
-        tokens: [...editForm.tokens, { ...currentToken }]
+        tokens: newTokens,
+        text: constructedSentence
       });
       setCurrentToken({ text: "", pinyin: "", meaning: "" });
     }
   };
 
   const removeToken = (index) => {
+    const newTokens = editForm.tokens.filter((_, i) => i !== index);
+    const constructedSentence = newTokens.map(token => token.text).join('');
     setEditForm({
       ...editForm,
-      tokens: editForm.tokens.filter((_, i) => i !== index)
+      tokens: newTokens,
+      text: constructedSentence
     });
   };
 
@@ -129,9 +135,11 @@ function BlogManagementPage({ onNavigateBack }) {
     if (editToken.text && editToken.pinyin && editToken.meaning) {
       const updatedTokens = [...editForm.tokens];
       updatedTokens[index] = { ...editToken };
+      const constructedSentence = updatedTokens.map(token => token.text).join('');
       setEditForm({
         ...editForm,
-        tokens: updatedTokens
+        tokens: updatedTokens,
+        text: constructedSentence
       });
       setEditingToken(null);
       setEditToken({ text: "", pinyin: "", meaning: "" });
@@ -181,21 +189,13 @@ function BlogManagementPage({ onNavigateBack }) {
       }
 
       // Add valid tokens to existing tokens
+      const newTokens = [...editForm.tokens, ...validTokens];
+      const constructedSentence = newTokens.map(token => token.text).join('');
       setEditForm({
         ...editForm,
-        tokens: [...editForm.tokens, ...validTokens]
+        tokens: newTokens,
+        text: constructedSentence
       });
-      
-      // Construct sentence from imported tokens and populate text field (if enabled)
-      if (constructSentence) {
-        const constructedSentence = validTokens.map(token => token.text).join('');
-        if (constructedSentence) {
-          setEditForm(prev => ({
-            ...prev,
-            text: prev.text ? `${prev.text}${constructedSentence}` : constructedSentence
-          }));
-        }
-      }
       
       setJsonInput("");
       setJsonError("");

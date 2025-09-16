@@ -16,13 +16,19 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
 
   const addToken = () => {
     if (currentToken.text && currentToken.pinyin && currentToken.meaning) {
-      setTokens([...tokens, { ...currentToken }]);
+      const newTokens = [...tokens, { ...currentToken }];
+      const constructedSentence = newTokens.map(token => token.text).join('');
+      setTokens(newTokens);
+      setText(constructedSentence);
       setCurrentToken({ text: "", pinyin: "", meaning: "" });
     }
   };
 
   const removeToken = (index) => {
-    setTokens(tokens.filter((_, i) => i !== index));
+    const newTokens = tokens.filter((_, i) => i !== index);
+    const constructedSentence = newTokens.map(token => token.text).join('');
+    setTokens(newTokens);
+    setText(constructedSentence);
   };
 
   const startEditing = (index) => {
@@ -34,7 +40,9 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
     if (editToken.text && editToken.pinyin && editToken.meaning) {
       const updatedTokens = [...tokens];
       updatedTokens[index] = { ...editToken };
+      const constructedSentence = updatedTokens.map(token => token.text).join('');
       setTokens(updatedTokens);
+      setText(constructedSentence);
       setEditingToken(null);
       setEditToken({ text: "", pinyin: "", meaning: "" });
     }
@@ -83,15 +91,10 @@ function CreateBlogPage({ onNavigateBack, onBlogCreated }) {
       }
 
       // Add valid tokens to existing tokens
-      setTokens([...tokens, ...validTokens]);
-      
-      // Construct sentence from imported tokens and populate text field (if enabled)
-      if (constructSentence) {
-        const constructedSentence = validTokens.map(token => token.text).join('');
-        if (constructedSentence) {
-          setText(prevText => prevText ? `${prevText}${constructedSentence}` : constructedSentence);
-        }
-      }
+      const newTokens = [...tokens, ...validTokens];
+      const constructedSentence = newTokens.map(token => token.text).join('');
+      setTokens(newTokens);
+      setText(constructedSentence);
       
       setJsonInput("");
       setJsonError("");

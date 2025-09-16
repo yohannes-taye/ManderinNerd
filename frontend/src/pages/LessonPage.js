@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./LessonPage.css";
 
-function LessonPage({ onNavigateToCreate, onNavigateToManage }) {
+function LessonPage() {
   //Just print to the console for testing purposes
   console.log("LessonPage component rendered");
 
@@ -124,8 +124,6 @@ function LessonPage({ onNavigateToCreate, onNavigateToManage }) {
         <button onClick={() => setShowPinyin(!showPinyin)}>
           {showPinyin ? "🈶 Pinyin ✓" : "🈶 Pinyin"}
         </button>
-        <button onClick={onNavigateToCreate}>✏️ Create Blog</button>
-        <button onClick={onNavigateToManage}>📝 Manage Blogs</button>
         <button>⚙️ Settings</button>
       </footer>
     </div>
