@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../config/axios";
 import "./LessonPage.css";
 
 function LessonPage({ blogId = 1, onBackToBlogs }) {
