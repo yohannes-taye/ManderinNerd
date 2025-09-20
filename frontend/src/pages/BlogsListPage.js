@@ -10,12 +10,30 @@ function BlogsListPage({ onSelectBlog }) {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        console.log('Fetching blogs list...');
+        console.log('=== FETCHING BLOGS ===');
+        console.log('Timestamp:', new Date().toISOString());
+        console.log('Axios base URL:', axios.defaults.baseURL);
+        console.log('Full URL will be:', `${axios.defaults.baseURL}/blogs`);
+        
         const response = await axios.get('/blogs');
-        console.log('Successfully fetched blogs:', response.data);
+        
+        console.log('=== BLOGS RESPONSE ===');
+        console.log('Status:', response.status);
+        console.log('Headers:', response.headers);
+        console.log('Data length:', response.data?.length);
+        console.log('Data:', response.data);
+        
         setBlogs(response.data);
       } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.error('=== BLOGS FETCH ERROR ===');
+        console.error('Timestamp:', new Date().toISOString());
+        console.error('Error object:', error);
+        console.error('Error message:', error.message);
+        console.error('Error response:', error.response);
+        console.error('Error status:', error.response?.status);
+        console.error('Error data:', error.response?.data);
+        console.error('Request config:', error.config);
+        
         setError('Unable to load blogs. Please check your connection.');
       } finally {
         setLoading(false);

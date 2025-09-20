@@ -42,12 +42,25 @@ app.get("/users", async (req, res) => {
 // Get all blogs
 app.get("/blogs", requireAuthAndActivation, async (req, res) => {
   try {
+    console.log('=== BLOGS API CALL ===');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('User:', req.user ? req.user.email : 'No user');
+    console.log('Headers:', req.headers);
+    
     const { rows } = await pool.query(
       "SELECT id, title, text, tokens, image_url, image_alt, created_at FROM blogs ORDER BY created_at DESC"
     );
+    
+    console.log('Query successful, found', rows.length, 'blogs');
+    console.log('Blogs data:', rows.map(blog => ({ id: blog.id, title: blog.title, hasImage: !!blog.image_url })));
+    
     res.json(rows);
   } catch (err) {
-    console.error(err);
+    console.error('=== BLOGS API ERROR ===');
+    console.error('Timestamp:', new Date().toISOString());
+    console.error('Error details:', err);
+    console.error('Error message:', err.message);
+    console.error('Error code:', err.code);
     res.status(500).json({ error: "Server error" });
   }
 });
@@ -136,6 +149,22 @@ app.delete("/blogs/:id", requireAuthAndActivation, async (req, res) => {
 });
 
 
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log('=== INCOMING REQUEST ===');
+  console.log('Method:', req.method);
+  console.log('URL:', req.url);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  console.log('Timestamp:', new Date().toISOString());
+  next();
+});
+
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '0.0.0.0';
-app.listen(PORT, HOST, () => console.log(`Server running on ${HOST}:${PORT}`));
+app.listen(PORT, HOST, () => {
+  console.log(`=== SERVER STARTED ===`);
+  console.log(`Server running on ${HOST}:${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Database: ${process.env.DB_NAME}`);
+});
