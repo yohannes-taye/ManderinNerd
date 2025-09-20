@@ -39,7 +39,7 @@ const LoginPage = ({ onNavigateToRegister, onNavigateToActivate, onLoginSuccess 
     <div className="login-page">
       <div className="login-container">
         <div className="login-header">
-          <h1>Welcome Back</h1>
+          <h1>Welcome Backk</h1>
           <p>Sign in to your account</p>
         </div>
 
